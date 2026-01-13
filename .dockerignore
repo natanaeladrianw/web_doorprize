@@ -1,0 +1,36 @@
+# Dependencies
+/node_modules
+/vendor
+
+# Laravel generated files
+.env
+.env.backup
+storage/*.key
+
+# IDE
+.idea
+.vscode
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+npm-debug.log*
+
+# Testing
+/coverage
+.phpunit.result.cache
+
+# Build files (akan di-build di dalam container)
+/public/build
+/public/hot
+
+# Cache dan storage files
+/.cache
+/.config
+/.local
+/.npm
