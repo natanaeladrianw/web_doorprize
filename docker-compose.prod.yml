@@ -1,0 +1,48 @@
+# Docker Compose untuk PRODUCTION
+# Menggunakan image :latest dari Docker Hub
+# JANGAN gunakan ini untuk development!
+
+services:
+  # Laravel Application (Production)
+  app:
+    image: adrianwrwn/web-doorprize:latest # Image production dari Docker Hub
+    container_name: doorprize-prod-app
+    restart: unless-stopped
+    ports:
+      - "80:80"
+    environment:
+      - APP_ENV=production
+      - APP_DEBUG=false
+      - DB_CONNECTION=mysql
+      - DB_HOST=db
+      - DB_PORT=3306
+      - DB_DATABASE=${DB_DATABASE:-doorprize}
+      - DB_USERNAME=${DB_USERNAME:-doorprize_user}
+      - DB_PASSWORD=${DB_PASSWORD:-secret123}
+      - APP_KEY=${APP_KEY}
+    depends_on:
+      - db
+    networks:
+      - doorprize-prod-network
+
+  # MySQL Database (Production)
+  db:
+    image: mysql:8.0
+    container_name: doorprize-prod-db
+    restart: unless-stopped
+    environment:
+      MYSQL_DATABASE: ${DB_DATABASE:-doorprize}
+      MYSQL_USER: ${DB_USERNAME:-doorprize_user}
+      MYSQL_PASSWORD: ${DB_PASSWORD:-secret123}
+      MYSQL_ROOT_PASSWORD: ${DB_ROOT_PASSWORD:-rootpassword}
+    volumes:
+      - prod-db-data:/var/lib/mysql
+    networks:
+      - doorprize-prod-network
+
+networks:
+  doorprize-prod-network:
+    driver: bridge
+
+volumes:
+  prod-db-data:
