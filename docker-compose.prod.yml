@@ -1,12 +1,12 @@
 # Docker Compose untuk PRODUCTION
 # Menggunakan image :latest dari Docker Hub
-# JANGAN gunakan ini untuk development!
+# Jalankan: docker-compose -f docker-compose.prod.yml up -d
 
 services:
   # Laravel Application (Production)
   app:
-    image: adrianwrwn/web-doorprize:latest # Image production dari Docker Hub
-    container_name: doorprize-prod-app
+    image: adrianwrwn/web-doorprize:latest
+    container_name: doorprize-prod
     restart: unless-stopped
     ports:
       - "80:80"
@@ -19,9 +19,9 @@ services:
       - DB_DATABASE=${DB_DATABASE:-doorprize}
       - DB_USERNAME=${DB_USERNAME:-doorprize_user}
       - DB_PASSWORD=${DB_PASSWORD:-secret123}
-      - APP_KEY=${APP_KEY}
     depends_on:
-      - db
+      db:
+        condition: service_healthy
     networks:
       - doorprize-prod-network
 
@@ -39,6 +39,11 @@ services:
       - prod-db-data:/var/lib/mysql
     networks:
       - doorprize-prod-network
+    healthcheck:
+      test: [ "CMD", "mysqladmin", "ping", "-h", "localhost" ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
 
 networks:
   doorprize-prod-network:
